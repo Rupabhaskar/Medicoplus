@@ -1,0 +1,213 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="SRS.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<style>
+    /* CSS for styling */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #6898ca;
+        margin: 0;
+        padding: 0;
+        color: #333;
+    }
+
+    header {
+        background-color: #004aad;
+        color: #fff;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1, h2, h3 {
+        color: #004aad;
+    }
+
+    p {
+        line-height: 1.6;
+    }
+
+    .service-card, .doctor-card, .location-card, .chatbot-info {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 15px 0;
+        background-color: #fafafa;
+        transition: transform 0.3s ease;
+    }
+
+    .service-card:hover, .doctor-card:hover, .location-card:hover, .chatbot-info:hover {
+        transform: scale(1.02);
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #004aad;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .btn:hover {
+        background-color: #003580;
+    }
+
+</style>
+</head>
+<body>
+    <div class="con">
+        <div class="color">
+            <div class="head">
+                <div class="logo">
+                    <a href="index.html">
+                        <img src="images/logo1.png" width="100px" height="125px" alt="Medico Plus Logo">
+                    </a>
+                    <div class="text">
+                        <a href="index.html" style="text-decoration: none;"><h1 style="color:rgb(106, 248, 250);">Medico Plus</h1></a>
+                        <h4 style="font-family:Verdana, Geneva, Tahoma, sans-serif; color: aquamarine;">The smart health solutions</h4>
+                    </div>
+                </div><!--logo-->
+                    <div class="navbar">
+                        <ul>
+                          <li><a href="index.html">HOME</a></li>
+                          <li><a href="About.html">ABOUT US</a></li>
+                          <li><a href="SERVICES.html">SERVICES</a></li>
+                          <li><a href="Overview.html">OVERVIEW</a></li>
+                          <li><a href="profile.html">PROFILE</a></li>
+                        </ul>
+                     </div><!-- navbar -->
+
+<div class="container">
+    <!-- Services Section -->
+    <section class="service">
+        <ul><h3>Our Services</h3></ul>
+        <div class="service-card">
+            <h3>Medical Products</h3>
+            <p>We offer a wide range of high-quality medical supplies, from essential health products to advanced medical devices. Our products are rigorously tested to ensure they meet the highest safety standards.</p>
+            <button class="btn" onclick="learnMore('Medical Products')">Learn More</button>
+        </div>
+
+        <div class="service-card">
+            <h3>Healthcare Consultations</h3>
+            <p>Connect with our network of healthcare professionals for specialized consultations, health assessments, and personalized treatment plans tailored to your unique needs.</p>
+            <button class="btn" onclick="learnMore('Healthcare Consultations')">Learn More</button>
+        </div>
+
+        <div class="service-card">
+            <h3>Preventive Care</h3>
+            <p>Our preventive care services focus on promoting a proactive approach to health, including screenings, wellness resources, and lifestyle guidance to help you stay healthy and avoid future health issues.</p>
+            <button class="btn" onclick="learnMore('Preventive Care')">Learn More</button>
+        </div>
+    </section>
+
+    <!-- Doctor Information Section -->
+    <section class="doctor">
+        <h2>Our Doctor</h2>
+        <div class="doctor-card">
+            <h3>Dr.RUPA BHASKAR PYDI, MBBS, MD</h3>
+            <p><strong>Specialty:</strong> Family Medicine</p>
+            <p><strong>Experience:</strong> 3 years in patient-centered family healthcare</p>
+            <p>Dr. RUPA BHASKAR PYDI is committed to providing comprehensive healthcare for individuals and families, focusing on preventive care and wellness. She is passionate about helping patients achieve and maintain their best health.</p>
+            <button class="btn" onclick="viewDoctor('Dr. RUPA BHASKAR PYDI', 'Family Medicine')">View Profile</button>
+        </div>
+    </section>
+
+    <!-- Doctor Location Section -->
+    <section class="locations">
+        <h2>Our Location</h2>
+        <div class="location-card">
+            <h3>Main Clinic</h3>
+            <p><strong>Address:</strong> 123 Health St., City Center</p>
+            <p><strong>Services:</strong> Full-service clinic offering consultations, diagnostics, and treatments.</p>
+            <button class="btn" onclick="viewLocation('Main Clinic')">View Location</button>
+        </div>
+    </section>
+
+    <!-- Chatbot Information Section -->
+    <section class="chatbot">
+        <h2>MedicoPlus Chatbot</h2>
+        <div class="chatbot-info">
+            <p>Have questions about our doctors, services, or clinic locations? Our MedicoPlus Chatbot is here to help! Simply ask the chatbot to provide information about available doctors, their specialties, and where they’re located.</p>
+            <p>With MedicoPlus Chatbot, you can quickly and easily find the healthcare support you need. Try asking:</p>
+            <ul>
+                <li>"Who is the family medicine specialist?"</li>
+                <li>"Where is the nearest MedicoPlus clinic?"</li>
+            </ul>
+            <button class="btn" onclick="startChatbot()">Chat with Us</button>
+        </div>
+    </section>
+</div>
+
+<!-- JavaScript for button interactions -->
+<script>
+    function learnMore(serviceName) {
+        alert(`Learn more about our ${serviceName} service! Contact us for additional details or schedule a consultation today.`);
+    }
+
+    function viewDoctor(doctorName, specialty) {
+        alert(`${doctorName}, ${specialty} Specialist. For more information or to schedule an appointment, please contact us.`);
+    }
+
+    function viewLocation(locationName) {
+        alert(`Get directions to ${locationName}. Visit our Contact page for detailed location info and office hours.`);
+    }
+
+    function startChatbot() {
+        alert("MedicoPlus Chatbot. Ask your questions about our doctors, services, and locations!");
+    }
+</script>
+                     <!-- Chatbot Icon -->
+        <div id="chatbotIcon" class="chatbot-icon">
+            <img src="images/chatbot.jpg" alt="Chatbot Icon">
+        </div>
+    
+        <!-- Chatbot Frame -->
+        <div id="chatbotFrame" class="chatbot-frame">
+            <!-- Menu Bar -->
+            <div class="menu-bar">
+                <button onclick="showContent('nearHospitals')">Nearby Hospitals</button>
+                <button onclick="showContent('pageInfo')">Page Info</button>
+                <button onclick="showContent('contact')">Contact</button>
+                <button onclick="showContent('imageProcessing')">Image Processing</button>
+            </div>
+    
+            <!-- Chat Container (Content Section) -->
+            <div id="contentSection" class="chat-container">
+                <!-- Content will be displayed here -->
+            </div>
+    
+            <!-- User Input Area -->
+            <div class="user-input">
+                <input type="text" id="userInput" placeholder="Type your message...">
+                <button onclick="sendMessage()">Send</button>
+                <input type="file" id="fileInput" style="display: none;">
+                <button onclick="document.getElementById('fileInput').click()">Attach File</button>
+            </div>
+        </div>
+        <!-- Include Leaflet.js -->
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+        <script src="javaScript/chatBotscript.js"></script>                    
+
+               
+                <div class="footer">
+                    <p style="font-family: Calibri Light (Headings);">The is website private copyright registered with the UK Data Prodection Act - Registration Number 21560331 Terms & Conditions</p>
+                </div><!--footer-->
+        </div><!--color-->
+    </div><!--con-->
+    <script src="javaScript/imageSlides.js"></script> 
+</body>
+</html>

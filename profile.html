@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="SRS.css">
+<script src="https://smtpjs.com/v3/smtp.js"></script>
+<script src="javaScript/profile.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<style>
+h2 {
+margin-bottom: 20px;
+color: #4CAF50;
+}
+
+.form-container {
+    position: relative;
+    margin: auto;
+    margin-top: 40px;
+background-color: white;
+padding: 30px;
+border-radius: 10px;
+box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+width: 100%;
+max-width: 400px;
+text-align: center;
+transition: transform 0.3s ease;
+}
+
+.form-container:hover {
+transform: translateY(-5px);
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="date"],
+input[type="number"] {
+width: 100%;
+padding: 12px 15px;
+margin: 8px 0;
+display: inline-block;
+border: 1px solid #ccc;
+border-radius: 5px;
+box-sizing: border-box;
+font-size: 16px;
+transition: border-color 0.3s;
+}
+
+input:focus {
+border-color: #4caf50;
+outline: none;
+}
+
+button {
+background-color: #4CAF50;
+color: white;
+padding: 14px 20px;
+margin-top: 15px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+width: 100%;
+font-size: 16px;
+transition: background-color 0.3s;
+}
+
+button:hover {
+background-color: #45a049;
+}
+
+.switch-form {
+color: #4CAF50;
+cursor: pointer;
+font-size: 14px;
+display: block;
+margin-top: 15px;
+}
+
+.switch-form:hover {
+text-decoration: underline;
+}
+
+p {
+margin-top: 20px;
+color: #777;
+}
+
+.error-message {
+color: red;
+font-size: 14px;
+margin-top: 10px;
+}
+
+#forgotPasswordForm,#registerForm {
+display: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+body {
+    padding: 20px;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 100%;
+}
+
+button {
+    font-size: 14px;
+    padding: 12px;
+}
+}
+/* Styles for OTP section */
+.otp-container {
+display:inline-flex;
+align-items: center;
+}
+.otp-btn {
+background-color: #4CAF50;
+color: white;
+width: auto;
+padding: 10px;
+margin-left: 10px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+font-size: 14px;
+transition: background-color 0.3s;
+}
+
+.otp-btn:hover {
+background-color: hsl(123, 40%, 45%);
+}
+
+
+</style>
+</head>
+<body style="background-color:  #4ca6d0;">  
+    <div class="con">
+        <div class="color">
+            <div class="head">
+                <div class="logo">
+                    <a href="index.html">
+                        <img src="images/logo1.png" width="100px" height="125px" alt="Medico Plus Logo">
+                    </a>
+                    <div class="text">
+                        <a href="index.html" style="text-decoration: none;"><h1 style="color:rgb(106, 248, 250);">Medico Plus</h1></a>
+                        <h4 style="font-family:Verdana, Geneva, Tahoma, sans-serif; color: aquamarine;">The smart health solutions</h4>
+                    </div>
+                </div><!--logo-->
+                    <div class="navbar">
+                        <ul>
+                          <li><a href="index.html">HOME</a></li>
+                          <li><a href="About.html">ABOUT US</a></li>
+                          <li><a href="SERVICES.html">SERVICES</a></li>
+                          <li><a href="Overview.html">OVERVIEW</a></li>
+                          <li><a href="#">PROFILE</a></li>
+
+                        </ul>
+                    </div><!-- navbar -->
+                    </div><!--head-->
+                    <!-- Login Form -->
+    <div class="form-container" id="loginForm">
+        <h2>Login</h2>
+        <input type="text" id="loginUsername" placeholder="Username" required>
+        <input type="password" id="loginPassword" placeholder="Password" required>
+        <button onclick="login()">Login</button>
+        <p><span class="switch-form" onclick="showForgotPasswordForm()">Forgot Password?</span></p>
+        <p>Don't have an account? <span class="switch-form" onclick="showRegisterForm()">Create Account</span></p>
+    </div>
+
+    <!-- Registration Form -->
+    <div class="form-container" id="registerForm">
+        <h2>Register</h2>
+        <input type="text" id="regUsername" placeholder="Username" required>
+        <input type="email" id="regEmail" placeholder="Gmail ID" required>
+        <input type="number" id="regPhone" placeholder="Mobile Number" required>
+        <input type="date" id="regDOB" required>
+        <input type="password" id="regPassword" placeholder="Password" required>
+        <input type="password" id="regConfirmPassword" placeholder="Confirm Password" required>
+        <button onclick="register()">Register</button>
+        <p>Already have an account? <span class="switch-form" onclick="showLoginForm()">Login</span></p>
+    </div>
+
+    <!-- Forgot Password Form -->
+<div class="form-container" id="forgotPasswordForm">
+    <h2>Forgot Password</h2>
+    <input type="text" id="fpUsername" placeholder="Username" required>
+    <div class="otp-container">
+        <input type="email" id="fpEmail" placeholder="Gmail ID" required>
+        <button type="button" class="otp-btn" onclick="generateOTP()">Generate OTP</button>
+            <input type="text" id="fpOTP" placeholder="OTP" required>
+            <button style="width: 100px;" class="btn" id="otp-btn">Verify</button>
+    </div>
+    <input type="password" id="fpPassword" placeholder="New Password" required>
+    <input type="password" id="fpConfirmPassword" placeholder="Confirm Password" required>
+    <button onclick="changePassword()">Change Password</button>
+    <p>Remember your password? <span class="switch-form" onclick="showLoginForm()">Login</span></p>
+</div>
+
+              <!-- Chatbot Icon -->
+ 
+
+</body>
+</html>
