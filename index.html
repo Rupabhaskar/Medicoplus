@@ -167,6 +167,29 @@
             background-color: #ddd;
             margin-top: 40px;
         }
+
+        /* Added styles for the chatbot section */
+        .content-section {
+            display: none;
+            padding: 15px;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        #chat-window {
+            height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+        
+        #map {
+            height: 300px;
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
@@ -250,38 +273,40 @@
                 </div>
             </main>
 
-            <!-- Chatbot Section -->
-               <div id="chatbot" class="content-section active">
-      <div id="chat-window"></div>
-      <input type="text" id="user-input" placeholder="Describe your symptoms..." />
-      <button onclick="sendMessage()">Send</button>
-    </div>
+            <!-- Chatbot and Hospital Finder Section -->
+            <div class="side-content">
+                <div id="chatbot" class="content-section active">
+                    <div class="menu-bar">
+                        <button onclick="showContent('chatbot')">Chat</button>
+                        <button onclick="showContent('nearHospitals')">Hospitals</button>
+                        <button onclick="showContent('pageInfo')">Info</button>
+                        <button onclick="showContent('contact')">Contact</button>
+                    </div>
+                    <div id="chat-window"></div>
+                    <div class="user-input">
+                        <input type="text" id="user-input" placeholder="Describe your symptoms...">
+                        <button onclick="sendMessage()">Send</button>
+                    </div>
+                </div>
 
-    <div id="nearHospitals" class="content-section">
-      <p>Enter your pincode to find nearby hospitals:</p>
-      <input type="text" id="pincodeInput" placeholder="e.g., 560001" />
-      <button onclick="getNearbyHospitals()">Search</button>
-      <div id="hospitalResults"></div>
-      <div id="map"></div>
-    </div>
+                <div id="nearHospitals" class="content-section">
+                    <p>Enter your pincode to find nearby hospitals:</p>
+                    <input type="text" id="pincodeInput" placeholder="e.g., 560001">
+                    <button onclick="getNearbyHospitals()">Search</button>
+                    <div id="hospitalResults"></div>
+                    <div id="map"></div>
+                </div>
 
-    <div id="pageInfo" class="content-section">
-      <h3>About Medico Plus</h3>
-      <p>Medico Plus is your virtual health assistant. Get symptom insights and find nearby hospitals in one place.</p>
-    </div>
+                <div id="pageInfo" class="content-section">
+                    <h3>About Medico Plus</h3>
+                    <p>Medico Plus is your virtual health assistant. Get symptom insights and find nearby hospitals in one place.</p>
+                </div>
 
-    <div id="contact" class="content-section">
-      <h3>Contact Us</h3>
-      <p>Email: support@medicoplus.com<br/>Phone: +1-234-567-8901</p>
-    </div>
+                <div id="contact" class="content-section">
+                    <h3>Contact Us</h3>
+                    <p>Email: support@medicoplus.com<br>Phone: +1-234-567-8901</p>
+                </div>
 
-    <div id="imageProcessing" class="content-section">
-      <h3>Image Processing</h3>
-      <p>Feature under development. Stay tuned!</p>
-    </div>
-  </div>
-            <!-- Side News Section -->
-            <aside class="side-content">
                 <h3>Current Health Problems</h3>
                 <div class="scrolling-news">
                     <div class="news-content" id="newsContent">
@@ -291,7 +316,7 @@
                         <p>4. Dengue fever outbreaks in tropical regions.</p>
                     </div>
                 </div>
-            </aside>
+            </div>
 
             <footer class="footer">
                 <p>The website is privately registered under the UK Data Protection Act - Reg. No. 21560331 | Terms & Conditions</p>
@@ -305,6 +330,11 @@
     <script src="javaScript/imageSlides.js"></script>
 
     <script>
+        // Initialize variables
+        let map;
+        let mapInitialized = false;
+
+        // Section reveal animation
         function revealSections() {
             const sections = document.querySelectorAll('.section');
             const windowHeight = window.innerHeight;
@@ -316,8 +346,109 @@
             });
         }
 
+        // Show content based on button click
+        function showContent(id) {
+            document.querySelectorAll('.content-section').forEach((section) => {
+                section.classList.remove('active');
+            });
+            document.getElementById(id).classList.add('active');
+            
+            // Initialize map only when needed
+            if (id === 'nearHospitals' && !mapInitialized) {
+                initMap();
+                mapInitialized = true;
+            }
+        }
+
+        // Initialize map
+        function initMap() {
+            // Default coordinates (can be changed based on user location)
+            const defaultCoords = [12.9716, 77.5946]; // Bangalore coordinates
+            map = L.map('map').setView(defaultCoords, 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+        }
+
+        // Chatbot functionality
+        function sendMessage() {
+            const input = document.getElementById("user-input");
+            const message = input.value.trim();
+            if (!message) return;
+            appendMessage("user", message);
+
+            // Simulated response
+            const response = generateBotResponse(message);
+            setTimeout(() => {
+                appendMessage("bot", response);
+            }, 500); // Simulate typing delay
+            input.value = "";
+        }
+
+        function appendMessage(sender, message) {
+            const chatWindow = document.getElementById("chat-window");
+            const msgDiv = document.createElement("div");
+            msgDiv.classList.add("chat-message", sender);
+            msgDiv.textContent = message;
+            chatWindow.appendChild(msgDiv);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function generateBotResponse(message) {
+            const symptoms = message.toLowerCase();
+            if (symptoms.includes("headache")) {
+                return "It seems you might have a tension headache. Consider resting and staying hydrated.";
+            } else if (symptoms.includes("fever")) {
+                return "Monitor your temperature regularly. If the fever persists, consult a doctor.";
+            } else if (symptoms.includes("chest pain") || symptoms.includes("shortness of breath")) {
+                return "These could be symptoms of a serious condition. Please seek immediate medical attention.";
+            } else {
+                return "Thank you for the information. A medical professional will be better suited to help you further.";
+            }
+        }
+
+        // Hospital search functionality
+        function getNearbyHospitals() {
+            const pincode = document.getElementById("pincodeInput").value.trim();
+            const resultsDiv = document.getElementById("hospitalResults");
+
+            if (!pincode) {
+                resultsDiv.innerHTML = "Please enter a valid pincode.";
+                return;
+            }
+
+            // Simulated hospital data (replace with real API call)
+            const hospitals = [
+                { name: "City Hospital", lat: 12.9716, lon: 77.5946, address: "123 Main St" },
+                { name: "HealthCare Center", lat: 12.975, lon: 77.605, address: "456 Oak Ave" },
+                { name: "MediLife Clinic", lat: 12.965, lon: 77.585, address: "789 Pine Rd" },
+            ];
+
+            resultsDiv.innerHTML = hospitals
+                .map(h => `<p><strong>${h.name}</strong><br>${h.address}</p>`)
+                .join("");
+
+            // Clear existing markers
+            map.eachLayer(layer => {
+                if (layer instanceof L.Marker) {
+                    map.removeLayer(layer);
+                }
+            });
+
+            // Add new markers
+            hospitals.forEach(hospital => {
+                L.marker([hospital.lat, hospital.lon])
+                    .addTo(map)
+                    .bindPopup(`<strong>${hospital.name}</strong><br>${hospital.address}`);
+            });
+        }
+
+        // Initialize on page load
         window.addEventListener('scroll', revealSections);
-        window.addEventListener('load', revealSections);
+        window.addEventListener('load', () => {
+            revealSections();
+            showContent('chatbot'); // Show chatbot by default
+        });
     </script>
 </body>
 </html>
