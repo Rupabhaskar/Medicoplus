@@ -1,110 +1,3 @@
-// document.addEventListener("DOMContentLoaded", function() {
-//     var chatbotIcon = document.getElementById("chatbotIcon");
-//     var chatbotFrame = document.getElementById("chatbotFrame");
-
-//     // Toggle chatbot frame on icon click
-//     chatbotIcon.addEventListener("click", function() {
-//         chatbotFrame.style.display = chatbotFrame.style.display === "none" || chatbotFrame.style.display === "" ? "block" : "none";
-//     });
-// });
-
-// // Function to show content in the chatbot frame
-// function showContent(contentId) {
-//     const contentSection = document.getElementById("contentSection");
-
-//     if (contentId === 'nearHospitals') {
-//         contentSection.innerHTML = `
-//             <h3>Find Nearby Hospitals</h3>
-//             <p>Enter your pincode:</p>
-//             <input type="text" id="pincodeInput" placeholder="Enter Pincode">
-//             <button onclick="getNearbyHospitals()">Search Hospitals</button>
-//             <div id="map"></div>
-//             <div id="hospitalResults"></div>
-//         `;
-//     } else {
-//         let content = '';
-//         switch (contentId) {
-//             case "pageInfo":
-//                 content = "<h3>Page Info</h3><p>This page provides information on medical services, nearby hospitals, and more.</p>";
-//                 break;
-//             case "contact":
-//                 content = "<h3>Contact</h3><p>Email: medicoplusin@gmail.com<br>Phone: +91-9703589296</p>";
-//                 break;
-//             case "imageProcessing":
-//                 content = "<h3>Image Processing</h3><p>Upload an image for processing.</p>";
-//                 break;
-//             default:
-//                 content = "<p>Welcome to the chatbot!</p>";
-//         }
-//         contentSection.innerHTML = content;
-//     }
-// }
-
-// // Function to find nearby hospitals using OpenStreetMap and Leaflet.js
-// function getNearbyHospitals() {
-//     const pincode = document.getElementById('pincodeInput').value;
-//     if (!pincode) {
-//         alert('Please enter a valid pincode.');
-//         return;
-//     }
-
-//     // Use a free geocoding API to convert the pincode to coordinates (like OpenCageData or Nominatim)
-//     fetch(`https://nominatim.openstreetmap.org/search?postalcode=${pincode}&format=json`)
-//         .then(response => response.json())
-//         .then(data => {
-//             if (data.length > 0) {
-//                 const { lat, lon } = data[0];
-
-//                 // Initialize the map with the fetched coordinates
-//                 const map = L.map('map').setView([lat, lon], 14);
-
-//                 // Add OpenStreetMap tile layer
-//                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-//                     attribution: '&copy; OpenStreetMap contributors'
-//                 }).addTo(map);
-
-//                 // Use Overpass API to search for hospitals
-//                 fetch(`https://overpass-api.de/api/interpreter?data=[out:json];node[amenity=hospital](around:5000,${lat},${lon});out;`)
-//                     .then(response => response.json())
-//                     .then(data => displayHospitals(data.elements, map));
-//             } else {
-//                 alert('No results found for this pincode.');
-//             }
-//         });
-// }
-
-// // Function to display hospital results on the map and in the results div
-// function displayHospitals(hospitals, map) {
-//     const resultsDiv = document.getElementById('hospitalResults');
-//     resultsDiv.innerHTML = '<h4>Hospitals Found:</h4><ul>';
-
-//     hospitals.forEach(hospital => {
-//         resultsDiv.innerHTML += `<li>${hospital.tags.name || 'Unknown Hospital'} - Lat: ${hospital.lat}, Lon: ${hospital.lon}</li>`;
-
-//         // Add markers to the map for each hospital
-//         L.marker([hospital.lat, hospital.lon])
-//             .addTo(map)
-//             .bindPopup(hospital.tags.name || 'Unknown Hospital')
-//             .openPopup();
-//     });
-
-//     resultsDiv.innerHTML += '</ul>';
-// }
-
-// // Function to send a message
-// function sendMessage() {
-//     const userInput = document.getElementById("userInput");
-//     const message = userInput.value.trim();
-    
-//     if (message) {
-//         const chatContainer = document.getElementById("contentSection");
-//         chatContainer.innerHTML += `<p>You: ${message}</p>`;
-//         userInput.value = ''; // Clear input
-//         chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to bottom
-//     }
-// }
-
-// Chatbot UI and Frame Toggle Functionality
 document.addEventListener("DOMContentLoaded", function() {
     var chatbotIcon = document.getElementById("chatbotIcon");
     var chatbotFrame = document.getElementById("chatbotFrame");
@@ -125,8 +18,8 @@ function showContent(contentId) {
             <p>Enter your pincode:</p>
             <input type="text" id="pincodeInput" placeholder="Enter Pincode">
             <button onclick="getNearbyHospitals()">Search Hospitals</button>
-            <div id="map" style="height: 300px; margin-top: 10px;"></div>
-            <div id="hospitalResults" style="margin-top: 10px;"></div>
+            <div id="map"></div>
+            <div id="hospitalResults"></div>
         `;
     } else {
         let content = '';
@@ -170,53 +63,37 @@ function getNearbyHospitals() {
                     attribution: '&copy; OpenStreetMap contributors'
                 }).addTo(map);
 
-                // Use Overpass API to search for hospitals within 5km radius
+                // Use Overpass API to search for hospitals
                 fetch(`https://overpass-api.de/api/interpreter?data=[out:json];node[amenity=hospital](around:5000,${lat},${lon});out;`)
                     .then(response => response.json())
                     .then(data => displayHospitals(data.elements, map));
             } else {
                 alert('No results found for this pincode.');
             }
-        })
-        .catch(() => alert('Error fetching location data. Please try again.'));
+        });
 }
 
 // Function to display hospital results on the map and in the results div
 function displayHospitals(hospitals, map) {
     const resultsDiv = document.getElementById('hospitalResults');
-    if (!hospitals.length) {
-        resultsDiv.innerHTML = "<p>No hospitals found nearby.</p>";
-        return;
-    }
     resultsDiv.innerHTML = '<h4>Hospitals Found:</h4><ul>';
 
     hospitals.forEach(hospital => {
-        resultsDiv.innerHTML += `<li>${hospital.tags.name || 'Unknown Hospital'} - Lat: ${hospital.lat.toFixed(4)}, Lon: ${hospital.lon.toFixed(4)}</li>`;
+        resultsDiv.innerHTML += `<li>${hospital.tags.name || 'Unknown Hospital'} - Lat: ${hospital.lat}, Lon: ${hospital.lon}</li>`;
 
         // Add markers to the map for each hospital
         L.marker([hospital.lat, hospital.lon])
             .addTo(map)
-            .bindPopup(hospital.tags.name || 'Unknown Hospital');
+            .bindPopup(hospital.tags.name || 'Unknown Hospital')
+            .openPopup();
     });
 
     resultsDiv.innerHTML += '</ul>';
 }
 
-// Function to send a message from user input (if used outside main chatbot)
+// Function to send a message
 function sendMessage() {
-    const userInput = document.getElementById("userInput");
-    const message = userInput.value.trim();
-    
-    if (message) {
-        const chatContainer = document.getElementById("contentSection");
-        chatContainer.innerHTML += `<p>You: ${message}</p>`;
-        userInput.value = ''; // Clear input
-        chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to bottom
-    }
-}
-
-// Main Chatbot Functionality with Medical Knowledge Base
-(() => {
+    (() => {
   const messagesEl = document.getElementById('messages');
   const inputEl = document.getElementById('user-input');
   const sendBtn = document.getElementById('send-btn');
@@ -226,7 +103,7 @@ function sendMessage() {
   const menu = document.getElementById('menu');
   
   // Enhanced medical knowledge base
-  const medicalDatabase = {
+    const medicalDatabase = {
     conditions: [
       {
         name: "Common Cold",
@@ -462,138 +339,305 @@ function sendMessage() {
       "Allergist/Immunologist": "Specializes in allergies and immune system disorders",
       "Proctologist": "Specializes in disorders of the rectum and anus"
     }
+  };  
+  // Chat state
+  let chatState = {
+    waitingForResponse: false,
+    conversationHistory: []
   };
 
-  function createMessage(text, from = 'bot') {
-    const msgDiv = document.createElement('div');
-    msgDiv.classList.add('message', from === 'bot' ? 'bot' : 'user');
-    msgDiv.innerHTML = text;
-    messagesEl.appendChild(msgDiv);
-    messagesEl.scrollTop = messagesEl.scrollHeight;
+  // DOM functions
+  function addMessage(text, sender = 'bot', isSystem = false) {
+    const msg = document.createElement('div');
+    msg.className = isSystem ? 'system-message' : `message ${sender === 'user' ? 'user-message' : 'bot-message'}`;
+    msg.textContent = text;
+    messagesEl.appendChild(msg);
+    scrollMessages();
+    
+    // Add to conversation history
+    chatState.conversationHistory.push({
+      sender,
+      text,
+      timestamp: new Date().toISOString()
+    });
   }
 
-  function showTyping() {
+  function addFormattedMessage(content, sender = 'bot') {
+    const msg = document.createElement('div');
+    msg.className = `message ${sender === 'user' ? 'user-message' : 'bot-message'}`;
+    msg.innerHTML = content;
+    messagesEl.appendChild(msg);
+    scrollMessages();
+    
+    // Add to conversation history (text only)
+    chatState.conversationHistory.push({
+      sender,
+      text: content.replace(/<[^>]*>/g, ''),
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  function showTypingIndicator() {
     typingIndicator.style.display = 'block';
+    scrollMessages();
   }
 
-  function hideTyping() {
+  function hideTypingIndicator() {
     typingIndicator.style.display = 'none';
   }
 
-  function analyzeSymptoms(input) {
-    input = input.toLowerCase();
-    let matchedConditions = [];
-
-    for (const cond of medicalDatabase.conditions) {
-      let matchCount = 0;
-      for (const keyword of cond.keywords) {
-        if (input.includes(keyword)) matchCount++;
-      }
-      if (matchCount > 0) {
-        matchedConditions.push({ condition: cond, matchCount });
-      }
-    }
-
-    matchedConditions.sort((a, b) => b.matchCount - a.matchCount);
-    return matchedConditions;
+  function scrollMessages() {
+    messagesEl.scrollTop = messagesEl.scrollHeight;
   }
 
-  function detectEmergency(input) {
-    input = input.toLowerCase();
-    for (const emergency of medicalDatabase.emergencyConditions) {
-      for (const keyword of emergency.keywords) {
-        if (input.includes(keyword)) {
-          return emergency;
+  function normalizeText(text) {
+    return text.toLowerCase().replace(/[^\w\s]/gi, '').trim();
+  }
+
+  function addQuickReplies(replies) {
+    const container = document.createElement('div');
+    container.className = 'quick-replies';
+    
+    replies.forEach(reply => {
+      const btn = document.createElement('button');
+      btn.className = 'quick-reply-btn';
+      btn.textContent = reply;
+      btn.addEventListener('click', () => {
+        inputEl.value = reply;
+        sendBtn.disabled = false;
+        formEl.dispatchEvent(new Event('submit'));
+      });
+      container.appendChild(btn);
+    });
+    
+    const msg = document.createElement('div');
+    msg.className = 'message bot-message';
+    msg.appendChild(container);
+    messagesEl.appendChild(msg);
+    scrollMessages();
+  }
+
+  // Medical analysis functions
+  function findCondition(userText) {
+    const textNorm = normalizeText(userText);
+    
+    // First check emergency conditions
+    for (const condition of medicalDatabase.emergencyConditions) {
+      for (const keyword of condition.keywords) {
+        if (new RegExp(`\\b${keyword}\\b`, 'i').test(textNorm)) {
+          return { ...condition, isEmergency: true };
         }
       }
     }
+    
+    // Then check regular conditions
+    for (const condition of medicalDatabase.conditions) {
+      for (const keyword of condition.keywords) {
+        if (new RegExp(`\\b${keyword}\\b`, 'i').test(textNorm)) {
+          return condition;
+        }
+      }
+    }
+    
     return null;
   }
 
-  // Respond with detailed condition info
-  function respondToSymptoms(input) {
-    const emergency = detectEmergency(input);
-    if (emergency) {
-      createMessage(`<strong>Emergency detected: ${emergency.name}</strong><br>${emergency.info || ''}<br><em>${emergency.action}</em>`, 'bot');
-      return;
-    }
-
-    const matched = analyzeSymptoms(input);
-    if (matched.length === 0) {
-      createMessage("I'm sorry, I couldn't identify the symptoms clearly. Could you please provide more details or consult a healthcare professional?", 'bot');
-      return;
-    }
-
-    // Show top 1-2 matches
-    matched.slice(0, 2).forEach(({ condition }) => {
-      let response = `<strong>${condition.name}</strong><br>`;
-      response += `<em>Symptoms:</em> ${condition.symptoms.join(', ')}<br>`;
-      response += `<em>About:</em> ${condition.info}<br>`;
-      response += `<em>Treatment:</em> ${condition.treatment.join(', ')}<br>`;
-      response += `<em>Recommended Doctor:</em> ${condition.doctor}<br>`;
-      if(condition.emergency) {
-        response += `<span style="color:red"><strong>Emergency Warning:</strong> ${condition.emergency}</span><br>`;
-      }
-      response += `<em>Prevalence:</em> ${condition.prevalence || "N/A"}`;
-      createMessage(response, 'bot');
-    });
-  }
-
-  // Quick replies for common symptoms
-  function addQuickReplies() {
-    const quickReplies = [
-      'I have a fever and cough',
-      'I am experiencing chest pain',
-      'I have a headache and nausea',
-      'I feel shortness of breath',
-      'I have stomach pain'
-    ];
-
-    const quickRepliesDiv = document.createElement('div');
-    quickRepliesDiv.classList.add('quick-replies');
-
-    quickReplies.forEach(text => {
-      const btn = document.createElement('button');
-      btn.textContent = text;
-      btn.className = 'quick-reply-btn';
-      btn.addEventListener('click', () => {
-        inputEl.value = text;
-        formEl.dispatchEvent(new Event('submit'));
+  function generateConditionResponse(condition) {
+    let response = `<strong>Possible Condition:</strong> ${condition.name}\n\n`;
+    
+    if (condition.isEmergency) {
+      response += `<div class="emergency-warning">⚠️ EMERGENCY: ${condition.action}</div>\n\n`;
+    } else {
+      response += `<strong>Common Symptoms:</strong>\n<ul class="symptom-list">`;
+      condition.symptoms.forEach(symptom => {
+        response += `<li>${symptom}</li>`;
       });
-      quickRepliesDiv.appendChild(btn);
-    });
-
-    messagesEl.appendChild(quickRepliesDiv);
+      response += `</ul>\n\n`;
+    }
+    
+    response += `<strong>Information:</strong> ${condition.info}\n\n`;
+    
+    if (condition.treatment) {
+      response += `<strong>Recommended Treatment:</strong>\n<ul class="symptom-list">`;
+      condition.treatment.forEach(item => {
+        response += `<li>${item}</li>`;
+      });
+      response += `</ul>\n\n`;
+    }
+    
+    response += `<div class="doctor-card"><strong>Recommended Doctor:</strong> ${condition.doctor} - ${medicalDatabase.doctors[condition.doctor] || ''}</div>`;
+    
+    if (condition.emergency && !condition.isEmergency) {
+      response += `<div class="emergency-warning">⚠️ Warning: ${condition.emergency}</div>`;
+    }
+    
+    return response;
   }
 
-  // Initialize chatbot greeting and quick replies
-  createMessage("Hello! I am your medical assistant. Please describe your symptoms or select one of the common symptoms below.");
-  addQuickReplies();
+  function getGeneralHealthAdvice() {
+    const randomAdvice = medicalDatabase.generalAdvice[
+      Math.floor(Math.random() * medicalDatabase.generalAdvice.length)
+    ];
+    return `Here's a health tip: ${randomAdvice}`;
+  }
 
-  // Form submit handler
+  // Bot response handling
+  function analyzeUserInput(userText) {
+    const condition = findCondition(userText);
+    
+    if (condition) {
+      return generateConditionResponse(condition);
+    } else if (userText.toLowerCase().includes('advice') || userText.toLowerCase().includes('tip')) {
+      return getGeneralHealthAdvice();
+    } else if (userText.toLowerCase().includes('thank')) {
+      return "You're welcome! Remember, I'm here to provide general health information but cannot replace a doctor's evaluation. Stay healthy!";
+    } else {
+      return "I couldn't identify a specific condition from your description. Could you provide more details about your symptoms? For example:\n- When did they start?\n- How severe are they?\n- Any other symptoms you're experiencing?";
+    }
+  }
+
+  function botReply(userText) {
+    showTypingIndicator();
+    
+    setTimeout(() => {
+      hideTypingIndicator();
+      const response = analyzeUserInput(userText);
+      addFormattedMessage(response);
+      
+      // Add quick replies for follow-up
+      if (response.includes("Could you provide more details")) {
+        addQuickReplies([
+          "It started yesterday",
+          "The pain is severe",
+          "I also have fever",
+          "Never mind, I feel better"
+        ]);
+      }
+    }, 1500 + Math.random() * 1000); // Random delay to simulate thinking
+  }
+
+  // Event listeners
   formEl.addEventListener('submit', e => {
     e.preventDefault();
-    const input = inputEl.value.trim();
-    if (!input) return;
-    
-    createMessage(input, 'user');
+    const userInput = inputEl.value.trim();
+    if (!userInput || chatState.waitingForResponse) return;
+
+    addMessage(userInput, 'user');
     inputEl.value = '';
-    hideTyping();
-    
-    // Simulate typing delay
-    showTyping();
+    sendBtn.disabled = true;
+    chatState.waitingForResponse = true;
+
+    botReply(userInput);
     setTimeout(() => {
-      hideTyping();
-      respondToSymptoms(input);
-      addQuickReplies();
-    }, 1500);
+      chatState.waitingForResponse = false;
+      inputEl.focus();
+    }, 3000);
   });
 
-  // Menu toggle button (if needed)
-  if(menuBtn && menu){
-    menuBtn.addEventListener('click', () => {
-      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-    });
+  inputEl.addEventListener('input', () => {
+    sendBtn.disabled = inputEl.value.trim().length === 0 || chatState.waitingForResponse;
+  });
+
+  // Menu functionality
+  menuBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+  });
+
+  document.addEventListener('click', () => {
+    menu.style.display = 'none';
+  });
+
+  menu.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
+
+  document.getElementById('reset-chat').addEventListener('click', () => {
+    messagesEl.innerHTML = '';
+    chatState.conversationHistory = [];
+    addMessage("Hello! I'm MedicoPlus Pro, your advanced medical assistant. How can I help you today?");
+    addQuickReplies([
+      "I have a headache",
+      "Chest pain and dizziness",
+      "Fever and cough",
+      "General health advice"
+    ]);
+  });
+
+  document.getElementById('emergency-help').addEventListener('click', () => {
+    addMessage("Emergency help selected", 'bot', true);
+    addFormattedMessage(`
+      <div class="emergency-warning">
+        <strong>⚠️ Emergency Assistance</strong><br><br>
+        If this is a life-threatening emergency, please call your local emergency number immediately.<br><br>
+        <strong>Common emergency symptoms:</strong>
+        <ul class="symptom-list">
+          <li>Chest pain or pressure</li>
+          <li>Difficulty breathing</li>
+          <li>Sudden severe pain</li>
+          <li>Uncontrolled bleeding</li>
+          <li>Sudden confusion or slurred speech</li>
+          <li>Severe allergic reaction</li>
+        </ul>
+        <br>
+        <strong>Emergency numbers:</strong><br>
+        • United States: 911<br>
+        • European Union: 112<br>
+        • UK: 999<br>
+        • Australia: 000<br>
+        <br>
+        Please describe your emergency and I'll try to help while you call for assistance.
+      </div>
+    `);
+  });
+
+  document.getElementById('symptom-checker').addEventListener('click', () => {
+    addMessage("Symptom checker selected", 'bot', true);
+    addFormattedMessage(`
+      <strong>🔍 Symptom Checker</strong><br><br>
+      Please describe all your symptoms in detail. For example:<br><br>
+      "I've had a headache for 3 days that gets worse when I bend over. I also have nasal congestion and a low-grade fever."<br><br>
+      The more details you provide, the better I can assist you.
+    `);
+    addQuickReplies([
+      "Headache with fever",
+      "Stomach pain and diarrhea",
+      "Cough and shortness of breath",
+      "Joint pain and swelling"
+    ]);
+  });
+
+  document.getElementById('find-doctors').addEventListener('click', () => {
+    addMessage("Find doctors selected", 'bot', true);
+    addFormattedMessage(`
+      <strong>👨‍⚕️ Find Doctors Nearby</strong><br><br>
+      I can suggest what type of doctor you might need to see based on your symptoms.<br><br>
+      <strong>Common specialist doctors:</strong>
+      <ul class="symptom-list">
+        <li><strong>Cardiologist:</strong> Heart and blood vessel issues</li>
+        <li><strong>Neurologist:</strong> Brain and nervous system disorders</li>
+        <li><strong>Gastroenterologist:</strong> Digestive system problems</li>
+        <li><strong>Dermatologist:</strong> Skin conditions</li>
+        <li><strong>Endocrinologist:</strong> Diabetes and hormone disorders</li>
+      </ul>
+      <br>
+      Describe your symptoms and I'll recommend the appropriate specialist.
+    `);
+  });
+
+  // Initialization
+  function initChatbot() {
+    addMessage("Hello! I'm MedicoPlus Pro, your advanced medical assistant. How can I help you today?");
+    addQuickReplies([
+      "I have a headache",
+      "Chest pain and dizziness",
+      "Fever and cough",
+      "General health advice"
+    ]);
+    inputEl.focus();
   }
 
+  initChatbot();
 })();
+}
+
