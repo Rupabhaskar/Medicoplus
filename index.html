@@ -1,10 +1,21 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>Medico Plus</title>
     <link rel="stylesheet" href="SRS.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
+        body {
+            background-color: rgb(111, 181, 228);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
         .side-content {
             padding: 20px;
             margin-left: 20px;
@@ -16,55 +27,50 @@
             position: sticky;
             top: 20px;
         }
-    .side-content h3 {
-        color: #e63946;
-        margin-bottom: 10px;
-    }
 
-    .scrolling-news {
-        height: 200px;
-        overflow: hidden;
-        border: 1px solid #ddd;
-        padding: 10px;
-        position: relative;
-        background-color: #ffffff;
-    }
-
-    .scrolling-news p {
-        color: #1d3557;
-        font-size: 14px;
-    }
-
-    .news-content {
-        position: absolute;
-        animation: scrollNews 10s linear infinite;
-    }
-
-    @keyframes scrollNews {
-        0% { top: 100%; }
-        100% { top: -100%; }
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .container {
-            flex-direction: column;
+        .side-content h3 {
+            color: #e63946;
+            margin-bottom: 10px;
         }
 
-        .side-content {
-            margin-left: 0;
-            margin-top: 20px;
+        .scrolling-news {
+            height: 200px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            padding: 10px;
+            position: relative;
+            background-color: #ffffff;
         }
-    }
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
+
+        .scrolling-news p {
+            color: #1d3557;
+            font-size: 14px;
+        }
+
+        .news-content {
+            position: absolute;
+            animation: scrollNews 10s linear infinite;
+        }
+
+        @keyframes scrollNews {
+            0% { top: 100%; }
+            100% { top: -100%; }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .side-content {
+                margin-left: 0;
+                margin-top: 20px;
+            }
         }
 
         .section {
             background-color: aqua;
-            border: 2px solid rgb(14, 14, 14);
+            border: 2px solid #0e0e0e;
             border-radius: 25px;
             text-align: center;
             padding: 20px;
@@ -72,6 +78,11 @@
             opacity: 0;
             transform: translateY(50px);
             transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .section img {
@@ -83,7 +94,7 @@
         }
 
         .section h2 {
-            color: #2e8b57; /* Green theme */
+            color: #2e8b57;
             margin: 10px 0;
         }
 
@@ -96,177 +107,210 @@
         .section ul {
             list-style-type: disc;
             margin: 10px 0 0 20px;
-            padding: 0;
         }
 
-        .section.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Staggered fade-in effect for each section */
         .section:nth-child(2) {
             transition-delay: 0.2s;
         }
+
         .section:nth-child(3) {
             transition-delay: 0.4s;
         }
 
+        .chatbot-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .chatbot-frame {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            display: none;
+            z-index: 1000;
+        }
+
+        .menu-bar {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .chat-container {
+            padding: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .user-input {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+        }
+
+        .user-input input[type="text"] {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #ddd;
+            margin-top: 40px;
+        }
     </style>
 </head>
-<body style="background-color:rgb(111, 181, 228)">
+<body>
+
     <div class="con">
         <div class="color">
-            <div class="head">
+            <header class="head">
                 <div class="logo">
                     <a href="index.html">
-                        <img src="images/logo1.png" width="100px" height="125px" alt="Medico Plus Logo">
+                        <img src="images/logo1.png" width="100" height="125" alt="Medico Plus Logo">
                     </a>
                     <div class="text">
-                        <a href="page.html" style="text-decoration: none;"><h1 style="color:rgb(106, 248, 250);">Medico Plus</h1></a>
+                        <a href="page.html" style="text-decoration: none;">
+                            <h1 style="color:rgb(106, 248, 250);">Medico Plus</h1>
+                        </a>
                         <h4 style="font-family:Verdana, Geneva, Tahoma, sans-serif; color: aquamarine;">The smart health solutions</h4>
                     </div>
-                </div><!--logo-->
-                    <div class="navbar">
-                        <ul>
-                          <li><a href="index.html">HOME</a></li>
-                          <li><a href="About.html">ABOUT US</a></li>
-                          <li><a href="SERVICES.html">SERVICES</a></li>
-                          <li><a href="Overview.html">OVERVIEW</a></li>
-                          <li><a href="profile.html">PROFILE</a></li>
-                        </ul>
-                    </div><!-- navbar -->
-                    <div class="slideshow-container">
-                        <div class="slides fade">
-                            <img src="images/digital-hospital.jpg" width="900px" height="225px" alt="Digital Hospital">
-                        </div>
-                        <div class="slides fade">
-                            <img src="images/img1.png" width="900px" height="225px" alt="Image 1">
-                        </div>
-                        
-                        <!-- Navigation buttons -->
-                        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-                        <a class="next" onclick="plusSlides(1)">&#10095;</a>
+                </div>
+
+                <nav class="navbar">
+                    <ul>
+                        <li><a href="index.html">HOME</a></li>
+                        <li><a href="About.html">ABOUT US</a></li>
+                        <li><a href="SERVICES.html">SERVICES</a></li>
+                        <li><a href="Overview.html">OVERVIEW</a></li>
+                        <li><a href="profile.html">PROFILE</a></li>
+                    </ul>
+                </nav>
+
+                <div class="slideshow-container">
+                    <div class="slides fade">
+                        <img src="images/digital-hospital.jpg" width="900" height="225" alt="Digital Hospital">
                     </div>
-                    <!-- Dots -->
-                    <div style="text-align: center;">
-                        <span class="dot" onclick="currentSlide(1)"></span> 
-                        <span class="dot" onclick="currentSlide(2)"></span> 
+                    <div class="slides fade">
+                        <img src="images/img1.png" width="900" height="225" alt="Image 1">
                     </div>
-                    
-                </div><!--head-->
-                    <div class="abox">  
-                        </div><!--aside-->
-<div class="container">
-    <!-- Major Health Problems Section -->
-    <div class="section">
-        <img src="images/MajorHealthProblems.jpg" alt="Major Health Problems">
-        <h2>Major Health Problems</h2>
-        <p>Learn about some of the most prevalent health issues affecting people worldwide. Understanding these issues can help with prevention and early intervention:</p>
-        <ul>
-            <li><strong>Heart Disease</strong>: Includes various cardiovascular conditions, often related to lifestyle factors such as diet, physical inactivity, and smoking.</li>
-            <li><strong>Diabetes</strong>: A chronic condition that affects how your body processes blood sugar, with types including Type 1, Type 2, and gestational diabetes.</li>
-            <li><strong>Cancer</strong>: Encompasses numerous types, such as lung, breast, and colon cancer, often with unique risk factors and treatment approaches.</li>
-            <li><strong>Respiratory Diseases</strong>: Conditions such as asthma, COPD, and bronchitis, often worsened by pollution, allergens, or smoking.</li>
-            <li><strong>Stroke</strong>: A sudden interruption in blood supply to the brain, often preventable through blood pressure management, diet, and exercise.</li>
-            <li><strong>Mental Health Disorders</strong>: Includes conditions like depression, anxiety, and bipolar disorder, impacting emotional well-being and quality of life.</li>
-        </ul>
-    </div>
+                    <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+                    <a class="next" onclick="plusSlides(1)">&#10095;</a>
+                </div>
 
-    <!-- Seasonal Diseases Section -->
-    <div class="section">
-        <img src="images/Screenshot 2024-11-02 233336.png" alt="Seasonal Diseases">
-        <h2>Seasonal Diseases</h2>
-        <p>Stay informed about common diseases that tend to peak in certain seasons. Learn how to prevent and manage these conditions:</p>
-        <ul>
-            <li><strong>Influenza (Flu)</strong>: A viral infection that spikes in winter months, causing symptoms like fever, chills, muscle aches, and fatigue.</li>
-            <li><strong>Common Cold</strong>: Often occurs during the fall and winter, causing symptoms like runny nose, sore throat, and cough.</li>
-            <li><strong>Allergies</strong>: Seasonal allergies, particularly spring and fall allergies, triggered by pollen, dust, and other allergens.</li>
-            <li><strong>Malaria</strong>: More common in tropical regions during the rainy season, transmitted by mosquito bites.</li>
-            <li><strong>Dengue Fever</strong>: A mosquito-borne illness that rises during rainy seasons, especially in tropical areas, causing high fever and severe body pain.</li>
-            <li><strong>Heat Stroke</strong>: More common in summer, particularly in regions with high temperatures and humidity, leading to dehydration and heat-related illness.</li>
-            <li><strong>Chikungunya</strong>: Another mosquito-borne disease that occurs more frequently during the rainy season in tropical areas, causing joint pain and fever.</li>
-        </ul>
-    </div>
+                <div style="text-align: center;">
+                    <span class="dot" onclick="currentSlide(1)"></span>
+                    <span class="dot" onclick="currentSlide(2)"></span>
+                </div>
+            </header>
 
-    <!-- Current Health Concerns Section -->
-    <div class="section">
-        <img src="images/CurrentHealthConcerns.jpg" alt="Current Health Concerns">
-        <h2>Current Health Concerns</h2>
-        <p>Stay updated on the latest health challenges, from emerging infectious diseases to public health updates. Our articles keep you informed and help you make healthy choices.</p>
-    </div>
-</div>
+            <main class="container">
+                <!-- Sections for health information -->
+                <div class="section">
+                    <img src="images/MajorHealthProblems.jpg" alt="Major Health Problems">
+                    <h2>Major Health Problems</h2>
+                    <p>Learn about some of the most prevalent health issues affecting people worldwide...</p>
+                    <ul>
+                        <li><strong>Heart Disease</strong>: Lifestyle-related cardiovascular issues.</li>
+                        <li><strong>Diabetes</strong>: Affects blood sugar processing.</li>
+                        <li><strong>Cancer</strong>: Various types including lung and breast.</li>
+                        <li><strong>Respiratory Diseases</strong>: Asthma, COPD, etc.</li>
+                        <li><strong>Stroke</strong>: Disruption of brain blood supply.</li>
+                        <li><strong>Mental Health Disorders</strong>: Depression, anxiety, etc.</li>
+                    </ul>
+                </div>
 
-<!-- JavaScript for fade-in effect -->
-<script>
-    // Function to reveal sections when they scroll into view
-    function revealSections() {
-        const sections = document.querySelectorAll('.section');
-        const windowHeight = window.innerHeight;
+                <div class="section">
+                    <img src="images/Screenshot 2024-11-02 233336.png" alt="Seasonal Diseases">
+                    <h2>Seasonal Diseases</h2>
+                    <ul>
+                        <li><strong>Influenza</strong>: Common in winter.</li>
+                        <li><strong>Common Cold</strong>: Frequent in cold months.</li>
+                        <li><strong>Allergies</strong>: Triggered by pollen, dust.</li>
+                        <li><strong>Malaria</strong>: Common during rainy seasons.</li>
+                        <li><strong>Dengue</strong>: Also mosquito-borne.</li>
+                        <li><strong>Heat Stroke</strong>: Summer-related.</li>
+                        <li><strong>Chikungunya</strong>: Joint pain fever.</li>
+                    </ul>
+                </div>
 
-        sections.forEach(section => {
-            const sectionTop = section.getBoundingClientRect().top;
+                <div class="section">
+                    <img src="images/CurrentHealthConcerns.jpg" alt="Current Health Concerns">
+                    <h2>Current Health Concerns</h2>
+                    <p>Stay updated on the latest health challenges...</p>
+                </div>
+            </main>
 
-            // Reveal section if it is within visible window
-            if (sectionTop < windowHeight - 100) {
-                section.classList.add('visible');
-            }
-        });
-    }
-
-    // Listen for scroll events to trigger reveal function
-    window.addEventListener('scroll', revealSections);
-
-    // Initial call to reveal sections on page load
-    revealSections();
-</script>
-        <!-- Chatbot Icon -->
-        <div id="chatbotIcon" class="chatbot-icon">
-            <img src="images/chatbot.jpg" alt="Chatbot Icon">
-        </div>
-    
-        <!-- Chatbot Frame -->
-        <div id="chatbotFrame" class="chatbot-frame">
-            <!-- Menu Bar -->
-            <div class="menu-bar">
-                <button onclick="showContent('nearHospitals')">Nearby Hospitals</button>
-                <button onclick="showContent('pageInfo')">Page Info</button>
-                <button onclick="showContent('contact')">Contact</button>
-                <button onclick="showContent('imageProcessing')">Image Processing</button>
+            <!-- Chatbot Section -->
+            <div id="chatbotIcon" class="chatbot-icon">
+                <img src="images/chatbot.jpg" alt="Chatbot Icon" onclick="document.getElementById('chatbotFrame').style.display='block'">
             </div>
-    
-            <!-- Chat Container (Content Section) -->
-            <div id="contentSection" class="chat-container">
-                <!-- Content will be displayed here -->
-            </div>
-    
-            <!-- User Input Area -->
-            <div class="user-input">
-                <input type="text" id="userInput" placeholder="Type your message...">
-                <button onclick="sendMessage()">Send</button>
-                <input type="file" id="fileInput" style="display: none;">
-                <button onclick="document.getElementById('fileInput').click()">Attach File</button>
-            </div>
-        </div>
-        <!-- Include Leaflet.js -->
-        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-        <script src="javaScript/chatBotscript.js"></script>
-                <div class="footer">
-                    <p style="font-family: Calibri Light (Headings);">The is website private copyright registered with the UK Data Prodection Act - Registration Number 21560331 Terms & Conditions</p>
-                </div><!--footer-->
-        </div><!--color-->
-        <div class="side-content">
-            <h3>Current Health Problems</h3>
-            <div class="scrolling-news">
-                <div class="news-content" id="newsContent">
-                    <p>1. Seasonal flu cases are rising globally.</p>
-                    <p>2. High air pollution levels are causing respiratory issues.</p>
-                    <p>3. Increase in mental health problems post-pandemic.</p>
-                    <p>4. Dengue fever outbreaks in tropical regions.</p>
+
+            <div id="chatbotFrame" class="chatbot-frame">
+                <div class="menu-bar">
+                    <button onclick="showContent('nearHospitals')">Nearby Hospitals</button>
+                    <button onclick="showContent('pageInfo')">Page Info</button>
+                    <button onclick="showContent('contact')">Contact</button>
+                    <button onclick="showContent('imageProcessing')">Image Processing</button>
+                </div>
+
+                <div id="contentSection" class="chat-container"></div>
+
+                <div class="user-input">
+                    <input type="text" id="userInput" placeholder="Type your message...">
+                    <button onclick="sendMessage()">Send</button>
+                    <input type="file" id="fileInput" style="display: none;">
+                    <button onclick="document.getElementById('fileInput').click()">Attach File</button>
                 </div>
             </div>
+
+            <!-- Side News Section -->
+            <aside class="side-content">
+                <h3>Current Health Problems</h3>
+                <div class="scrolling-news">
+                    <div class="news-content" id="newsContent">
+                        <p>1. Seasonal flu cases are rising globally.</p>
+                        <p>2. High air pollution levels are causing respiratory issues.</p>
+                        <p>3. Increase in mental health problems post-pandemic.</p>
+                        <p>4. Dengue fever outbreaks in tropical regions.</p>
+                    </div>
+                </div>
+            </aside>
+
+            <footer class="footer">
+                <p>The website is privately registered under the UK Data Protection Act - Reg. No. 21560331 | Terms & Conditions</p>
+            </footer>
         </div>
-    </div><!--con-->
-    <script src="javaScript/imageSlides.js"></script>  
+    </div>
+
+    <!-- External JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="javaScript/chatBotscript.js"></script>
+    <script src="javaScript/imageSlides.js"></script>
+
+    <script>
+        function revealSections() {
+            const sections = document.querySelectorAll('.section');
+            const windowHeight = window.innerHeight;
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                if (sectionTop < windowHeight - 100) {
+                    section.classList.add('visible');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', revealSections);
+        window.addEventListener('load', revealSections);
+    </script>
 </body>
 </html>
