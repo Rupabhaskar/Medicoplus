@@ -2,183 +2,291 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Medico Plus - Chatbot</title>
+    <title>Medico Plus</title>
     <link rel="stylesheet" href="SRS.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
         body {
-            font-family: Arial, sans-serif;
             background-color: #e0f7fa;
+            font-family: Arial, sans-serif;
+            margin: 0;
         }
-
+        .con {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding: 20px;
+        }
+        .color {
+            flex: 1;
+            min-width: 70%;
+        }
+        .side-content {
+            width: 280px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+        .side-content h3 {
+            color: #00796b;
+        }
+        .scrolling-news {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+        .news-content {
+            position: absolute;
+            animation: scrollNews 12s linear infinite;
+        }
+        .scrolling-news p {
+            margin: 10px 0;
+            font-size: 14px;
+            color: #333;
+        }
+        @keyframes scrollNews {
+            0% { top: 100%; }
+            100% { top: -100%; }
+        }
+        .section {
+            background-color: #b2ebf2;
+            border-radius: 25px;
+            padding: 20px;
+            margin: 30px 0;
+            transition: opacity 1s ease, transform 1s ease;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .section img {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
         .chatbot-icon {
             position: fixed;
             bottom: 20px;
             right: 20px;
             cursor: pointer;
-            width: 60px;
-            height: 60px;
-            z-index: 999;
+            z-index: 1000;
         }
-
-        .chatbot-icon img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 2px solid #00796b;
-        }
-
         .chatbot-frame {
+            display: none;
             position: fixed;
-            bottom: 90px;
+            bottom: 80px;
             right: 20px;
             width: 350px;
-            height: 500px;
-            background-color: #ffffff;
-            border: 2px solid #00796b;
-            border-radius: 15px;
-            display: none;
-            flex-direction: column;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
             z-index: 999;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            overflow: hidden;
         }
-
         .menu-bar {
             display: flex;
-            justify-content: space-around;
-            background-color: #004d40;
-            padding: 10px;
-        }
-
-        .menu-bar button {
             background-color: #00796b;
-            color: #ffffff;
-            border: none;
-            padding: 8px 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
         }
-
-        .chat-container {
+        .menu-bar button {
             flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
             padding: 10px;
+            cursor: pointer;
+        }
+        .chat-container {
+            padding: 10px;
+            height: 200px;
             overflow-y: auto;
         }
-
         .user-input {
             display: flex;
-            flex-direction: column;
             padding: 10px;
             border-top: 1px solid #ccc;
         }
-
         .user-input input[type="text"] {
             flex: 1;
             padding: 8px;
-            margin-bottom: 5px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
         }
-
         .user-input button {
-            background-color: #00796b;
-            color: white;
-            border: none;
+            margin-left: 5px;
             padding: 8px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 5px;
         }
-
+        .footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #004d40;
+            color: white;
+            font-size: 14px;
+        }
         #map {
             width: 100%;
             height: 200px;
-            margin-top: 10px;
+            margin-top: 20px;
+        }
+        @media (max-width: 768px) {
+            .con {
+                flex-direction: column;
+            }
+            .side-content {
+                width: 100%;
+                margin-top: 20px;
+            }
+            .chatbot-frame {
+                width: 95%;
+                right: 2.5%;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Chatbot Icon -->
-    <div id="chatbotIcon" class="chatbot-icon">
-        <img src="images/chatbot.jpg" alt="Chatbot Icon">
+    <div class="con">
+        <div class="color">
+            <header>
+                <div class="logo">
+                    <img src="images/logo1.png" alt="Logo" width="100">
+                    <h1 style="color:#00796b;">Medico Plus</h1>
+                    <h4 style="color:#4db6ac;">The smart health solutions</h4>
+                </div>
+                <nav class="navbar">
+                    <ul style="display:flex;gap:10px;list-style:none;padding:0;">
+                        <li><a href="/">HOME</a></li>
+                        <li><a href="/about">ABOUT US</a></li>
+                        <li><a href="/services">SERVICES</a></li>
+                        <li><a href="/overview">OVERVIEW</a></li>
+                        <li><a href="/profile">PROFILE</a></li>
+                    </ul>
+                </nav>
+            </header>
+
+            <!-- Health Sections -->
+            <div class="section">
+                <img src="images/MajorHealthProblems.jpg" alt="Major Health Problems">
+                <h2>Major Health Problems</h2>
+                <p>Understanding key health concerns globally helps in prevention and early treatment.</p>
+                <ul>
+                    <li>Heart Disease</li>
+                    <li>Diabetes</li>
+                    <li>Cancer</li>
+                    <li>Respiratory Diseases</li>
+                    <li>Stroke</li>
+                    <li>Mental Health Disorders</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <img src="images/Screenshot 2024-11-02 233336.png" alt="Seasonal Diseases">
+                <h2>Seasonal Diseases</h2>
+                <ul>
+                    <li>Influenza (Flu)</li>
+                    <li>Common Cold</li>
+                    <li>Allergies</li>
+                    <li>Malaria</li>
+                    <li>Dengue</li>
+                    <li>Heat Stroke</li>
+                    <li>Chikungunya</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <img src="images/CurrentHealthConcerns.jpg" alt="Current Health Concerns">
+                <h2>Current Health Concerns</h2>
+                <p>Track the latest health updates and tips to stay healthy.</p>
+                <div id="map"></div>
+            </div>
+
+            <div class="footer">
+                <p>© 2025 Medico Plus | Registered with the UK Data Protection Act (No. 21560331)</p>
+            </div>
+        </div>
+
+        <div class="side-content">
+            <h3>Current Health Problems</h3>
+            <div class="scrolling-news">
+                <div class="news-content" id="newsContent">
+                    <p>1. Seasonal flu cases are rising globally.</p>
+                    <p>2. High air pollution levels are causing respiratory issues.</p>
+                    <p>3. Increase in mental health issues post-pandemic.</p>
+                    <p>4. Dengue outbreaks in tropical areas.</p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Chatbot Frame -->
+    <!-- Chatbot Icon -->
+    <div id="chatbotIcon" class="chatbot-icon">
+        <img src="images/chatbot.jpg" alt="Chatbot" width="50">
+    </div>
+
+    <!-- Chatbot Panel -->
     <div id="chatbotFrame" class="chatbot-frame">
-        <!-- Menu Bar -->
         <div class="menu-bar">
             <button onclick="showContent('nearHospitals')">Nearby Hospitals</button>
             <button onclick="showContent('pageInfo')">Page Info</button>
             <button onclick="showContent('contact')">Contact</button>
             <button onclick="showContent('imageProcessing')">Image Processing</button>
         </div>
-
-        <!-- Content Section -->
         <div id="contentSection" class="chat-container"></div>
-
-        <!-- User Input -->
         <div class="user-input">
             <input type="text" id="userInput" placeholder="Type your message...">
             <button onclick="sendMessage()">Send</button>
             <input type="file" id="fileInput" style="display: none;">
-            <button onclick="document.getElementById('fileInput').click()">Attach File</button>
+            <button onclick="document.getElementById('fileInput').click()">Attach</button>
         </div>
     </div>
 
     <!-- Scripts -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
-        // Toggle chatbot visibility
+        // Fade-in on scroll
+        function revealSections() {
+            const sections = document.querySelectorAll('.section');
+            const windowHeight = window.innerHeight;
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                if (sectionTop < windowHeight - 100) {
+                    section.classList.add('visible');
+                }
+            });
+        }
+        window.addEventListener('scroll', revealSections);
+        window.onload = revealSections;
+
+        // Toggle chatbot
         document.getElementById('chatbotIcon').addEventListener('click', () => {
             const frame = document.getElementById('chatbotFrame');
-            frame.style.display = frame.style.display === 'flex' ? 'none' : 'flex';
+            frame.style.display = frame.style.display === 'block' ? 'none' : 'block';
         });
 
-        // Show different content
+        // Show chatbot content
         function showContent(type) {
             const container = document.getElementById('contentSection');
-            container.innerHTML = "";
+            container.innerHTML = `<p>You selected: ${type}</p>`;
+        }
 
-            if (type === 'nearHospitals') {
-                container.innerHTML = '<div id="map"></div>';
-                setTimeout(() => {
-                    const map = L.map('map').setView([51.505, -0.09], 13);
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-                    L.marker([51.505, -0.09]).addTo(map).bindPopup("You are here").openPopup();
-                }, 100);
-            } else if (type === 'pageInfo') {
-                container.innerHTML = '<p>This chatbot provides health tips and nearby hospital info. Developed by Medico Plus.</p>';
-            } else if (type === 'contact') {
-                container.innerHTML = '<p>Contact us at: <br>Email: support@medicoplus.com <br>Phone: +44 1234 567890</p>';
-            } else if (type === 'imageProcessing') {
-                container.innerHTML = '<p>Image processing feature coming soon!</p>';
+        // Send message function
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const msg = input.value;
+            if (msg.trim()) {
+                const container = document.getElementById('contentSection');
+                container.innerHTML += `<p><strong>You:</strong> ${msg}</p>`;
+                input.value = '';
             }
         }
 
-        // Simulate sending a message
-        function sendMessage() {
-            const input = document.getElementById('userInput');
-            const text = input.value.trim();
-            if (!text) return;
-
-            const container = document.getElementById('contentSection');
-
-            // User message
-            const userMsg = document.createElement('div');
-            userMsg.style.color = 'blue';
-            userMsg.innerText = 'You: ' + text;
-            container.appendChild(userMsg);
-
-            // Bot response
-            const botMsg = document.createElement('div');
-            botMsg.style.color = 'green';
-            botMsg.innerText = 'Bot: Thank you for your message. A real assistant will respond shortly.';
-            container.appendChild(botMsg);
-
-            input.value = '';
-            container.scrollTop = container.scrollHeight;
-        }
+        // Leaflet map
+        const map = L.map('map').setView([51.505, -0.09], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        L.marker([51.505, -0.09]).addTo(map).bindPopup('Your Location').openPopup();
     </script>
 </body>
 </html>
