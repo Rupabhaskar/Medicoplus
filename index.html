@@ -251,28 +251,35 @@
             </main>
 
             <!-- Chatbot Section -->
-            <div id="chatbotIcon" class="chatbot-icon">
-                <img src="images/chatbot.jpg" alt="Chatbot Icon" onclick="document.getElementById('chatbotFrame').style.display='block'">
-            </div>
+               <div id="chatbot" class="content-section active">
+      <div id="chat-window"></div>
+      <input type="text" id="user-input" placeholder="Describe your symptoms..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
 
-            <div id="chatbotFrame" class="chatbot-frame">
-                <div class="menu-bar">
-                    <button onclick="showContent('nearHospitals')">Nearby Hospitals</button>
-                    <button onclick="showContent('pageInfo')">Page Info</button>
-                    <button onclick="showContent('contact')">Contact</button>
-                    <button onclick="showContent('imageProcessing')">Image Processing</button>
-                </div>
+    <div id="nearHospitals" class="content-section">
+      <p>Enter your pincode to find nearby hospitals:</p>
+      <input type="text" id="pincodeInput" placeholder="e.g., 560001" />
+      <button onclick="getNearbyHospitals()">Search</button>
+      <div id="hospitalResults"></div>
+      <div id="map"></div>
+    </div>
 
-                <div id="contentSection" class="chat-container"></div>
+    <div id="pageInfo" class="content-section">
+      <h3>About Medico Plus</h3>
+      <p>Medico Plus is your virtual health assistant. Get symptom insights and find nearby hospitals in one place.</p>
+    </div>
 
-                <div class="user-input">
-                    <input type="text" id="userInput" placeholder="Type your message...">
-                    <button onclick="sendMessage()">Send</button>
-                    <input type="file" id="fileInput" style="display: none;">
-                    <button onclick="document.getElementById('fileInput').click()">Attach File</button>
-                </div>
-            </div>
+    <div id="contact" class="content-section">
+      <h3>Contact Us</h3>
+      <p>Email: support@medicoplus.com<br/>Phone: +1-234-567-8901</p>
+    </div>
 
+    <div id="imageProcessing" class="content-section">
+      <h3>Image Processing</h3>
+      <p>Feature under development. Stay tuned!</p>
+    </div>
+  </div>
             <!-- Side News Section -->
             <aside class="side-content">
                 <h3>Current Health Problems</h3>
