@@ -1,119 +1,105 @@
-// Handles showing content based on the button clicked
-function showContent(id) {
-  document.querySelectorAll('.content-section').forEach((section) => {
-    section.classList.remove('active');
-  });
-  document.getElementById(id).classList.add('active');
-}
+document.addEventListener("DOMContentLoaded", function() {
+    var chatbotIcon = document.getElementById("chatbotIcon");
+    var chatbotFrame = document.getElementById("chatbotFrame");
 
-// Basic chatbot functionality
-function sendMessage() {
-  const input = document.getElementById("user-input");
-  const message = input.value.trim();
-  if (!message) return;
-  appendMessage("user", message);
+    // Toggle chatbot frame on icon click
+    chatbotIcon.addEventListener("click", function() {
+        chatbotFrame.style.display = chatbotFrame.style.display === "none" || chatbotFrame.style.display === "" ? "block" : "none";
+    });
+});
 
-  // Simulated response
-  const response = generateBotResponse(message);
-  appendMessage("bot", response);
-  input.value = "";
-}
+// Function to show content in the chatbot frame
+function showContent(contentId) {
+    const contentSection = document.getElementById("contentSection");
 
-function appendMessage(sender, message) {
-  const chatWindow = document.getElementById("chat-window");
-  const msgDiv = document.createElement("div");
-  msgDiv.classList.add("chat-message", sender);
-  msgDiv.textContent = message;
-  chatWindow.appendChild(msgDiv);
-  chatWindow.scrollTop = chatWindow.scrollHeight;
-}
-
-function generateBotResponse(message) {
-  const symptoms = message.toLowerCase();
-  if (symptoms.includes("headache")) {
-    return "It seems you might have a tension headache. Consider resting and staying hydrated.";
-  } else if (symptoms.includes("fever")) {
-    return "Monitor your temperature regularly. If the fever persists, consult a doctor.";
-  } else {
-    return "Thank you for the information. A medical professional will be better suited to help you further.";
-  }
-}
-
-// Simulated hospital search (you can replace with real API logic)
-function getNearbyHospitals() {
-  const pincode = document.getElementById("pincodeInput").value.trim();
-  const resultsDiv = document.getElementById("hospitalResults");
-  const mapDiv = document.getElementById("map");
-
-  if (!pincode) {
-    resultsDiv.innerHTML = "Please enter a valid pincode.";
-    return;
-  }
-
-  const hospitals = [
-    { name: "City Hospital", lat: 12.9716, lon: 77.5946 },
-    { name: "HealthCare Center", lat: 12.975, lon: 77.605 },
-    { name: "MediLife Clinic", lat: 12.965, lon: 77.585 },
-  ];
-
-  resultsDiv.innerHTML = hospitals
-    .map((h) => `<p><strong>${h.name}</strong></p>`) 
-    .join("");
-
-  const map = L.map("map").setView([hospitals[0].lat, hospitals[0].lon], 13);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors'
-  }).addTo(map);
-
-  hospitals.forEach((hospital) => {
-    L.marker([hospital.lat, hospital.lon]).addTo(map)
-      .bindPopup(hospital.name)
-      .openPopup();
-  });
-}
-function respondToSymptoms(input) {
-  const emergency = detectEmergency(input);
-  if (emergency) {
-    createMessage(`<strong>Emergency detected: ${emergency.name}</strong><br>${emergency.info || ''}<br><em>${emergency.action}</em>`, 'bot');
-    return;
-  }
-
-  const matched = analyzeSymptoms(input);
-  if (matched.length === 0) {
-    createMessage("I'm sorry, I couldn't identify the symptoms clearly. Could you please provide more details or consult a healthcare professional?", 'bot');
-    return;
-  }
-
-  matched.slice(0, 2).forEach(({ condition }) => {
-    let response = `<strong>${condition.name}</strong><br>`;
-    response += `<em>Symptoms:</em> ${condition.symptoms.join(', ')}<br>`;
-    response += `<em>About:</em> ${condition.info}<br>`;
-    response += `<em>Treatment:</em> ${condition.treatment.join(', ')}<br>`;
-    response += `<em>Recommended Doctor:</em> ${condition.doctor}<br>`;
-    if(condition.emergency) {
-      response += `<span style="color:red"><strong>Emergency Warning:</strong> ${condition.emergency}</span><br>`;
+    if (contentId === 'nearHospitals') {
+        contentSection.innerHTML = `
+            <h3>Find Nearby Hospitals</h3>
+            <p>Enter your pincode:</p>
+            <input type="text" id="pincodeInput" placeholder="Enter Pincode">
+            <button onclick="getNearbyHospitals()">Search Hospitals</button>
+            <div id="map"></div>
+            <div id="hospitalResults"></div>
+        `;
+    } else {
+        let content = '';
+        switch (contentId) {
+            case "pageInfo":
+                content = "<h3>Page Info</h3><p>This page provides information on medical services, nearby hospitals, and more.</p>";
+                break;
+            case "contact":
+                content = "<h3>Contact</h3><p>Email: medicoplusin@gmail.com<br>Phone: +91-9703589296</p>";
+                break;
+            case "imageProcessing":
+                content = "<h3>Image Processing</h3><p>Upload an image for processing.</p>";
+                break;
+            default:
+                content = "<p>Welcome to the chatbot!</p>";
+        }
+        contentSection.innerHTML = content;
     }
-    response += `<em>Prevalence:</em> ${condition.prevalence || 'N/A'}<br>`;
-    createMessage(response, 'bot');
-  });
 }
 
-// Event listener for form submission or button click
-formEl.addEventListener('submit', e => {
-  e.preventDefault();
-  const input = inputEl.value.trim();
-  if (!input) return;
-  createMessage(input, 'user');
-  inputEl.value = '';
-  showTyping();
+// Function to find nearby hospitals using OpenStreetMap and Leaflet.js
+function getNearbyHospitals() {
+    const pincode = document.getElementById('pincodeInput').value;
+    if (!pincode) {
+        alert('Please enter a valid pincode.');
+        return;
+    }
 
-  setTimeout(() => {
-    hideTyping();
-    respondToSymptoms(input);
-  }, 1000); // Simulate typing delay
-});
+    // Use a free geocoding API to convert the pincode to coordinates (like OpenCageData or Nominatim)
+    fetch(`https://nominatim.openstreetmap.org/search?postalcode=${pincode}&format=json`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.length > 0) {
+                const { lat, lon } = data[0];
 
-// Toggle menu example
-menuBtn.addEventListener('click', () => {
-  menu.classList.toggle('open');
-});
+                // Initialize the map with the fetched coordinates
+                const map = L.map('map').setView([lat, lon], 14);
+
+                // Add OpenStreetMap tile layer
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(map);
+
+                // Use Overpass API to search for hospitals
+                fetch(`https://overpass-api.de/api/interpreter?data=[out:json];node[amenity=hospital](around:5000,${lat},${lon});out;`)
+                    .then(response => response.json())
+                    .then(data => displayHospitals(data.elements, map));
+            } else {
+                alert('No results found for this pincode.');
+            }
+        });
+}
+
+// Function to display hospital results on the map and in the results div
+function displayHospitals(hospitals, map) {
+    const resultsDiv = document.getElementById('hospitalResults');
+    resultsDiv.innerHTML = '<h4>Hospitals Found:</h4><ul>';
+
+    hospitals.forEach(hospital => {
+        resultsDiv.innerHTML += `<li>${hospital.tags.name || 'Unknown Hospital'} - Lat: ${hospital.lat}, Lon: ${hospital.lon}</li>`;
+
+        // Add markers to the map for each hospital
+        L.marker([hospital.lat, hospital.lon])
+            .addTo(map)
+            .bindPopup(hospital.tags.name || 'Unknown Hospital')
+            .openPopup();
+    });
+
+    resultsDiv.innerHTML += '</ul>';
+}
+
+// Function to send a message
+function sendMessage() {
+    const userInput = document.getElementById("userInput");
+    const message = userInput.value.trim();
+    
+    if (message) {
+        const chatContainer = document.getElementById("contentSection");
+        chatContainer.innerHTML += `<p>You: ${message}</p>`;
+        userInput.value = ''; // Clear input
+        chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to bottom
+    }
+}
