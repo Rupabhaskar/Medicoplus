@@ -94,7 +94,7 @@ function displayHospitals(hospitals, map) {
 // Function to send a message
 function sendMessage() {
     (() => {
-  const messagesEl = document.getElementById('messages');
+  const contentSectionEl = document.getElementById('contentSection');
   const inputEl = document.getElementById('user-input');
   const sendBtn = document.getElementById('send-btn');
   const formEl = document.getElementById('input-area');
@@ -351,8 +351,8 @@ function sendMessage() {
     const msg = document.createElement('div');
     msg.className = isSystem ? 'system-message' : `message ${sender === 'user' ? 'user-message' : 'bot-message'}`;
     msg.textContent = text;
-    messagesEl.appendChild(msg);
-    scrollMessages();
+    contentSectionEl.appendChild(msg);
+    scrollcontentSection();
     
     // Add to conversation history
     chatState.conversationHistory.push({
@@ -366,8 +366,8 @@ function sendMessage() {
     const msg = document.createElement('div');
     msg.className = `message ${sender === 'user' ? 'user-message' : 'bot-message'}`;
     msg.innerHTML = content;
-    messagesEl.appendChild(msg);
-    scrollMessages();
+    contentSectionEl.appendChild(msg);
+    scrollcontentSection();
     
     // Add to conversation history (text only)
     chatState.conversationHistory.push({
@@ -379,15 +379,15 @@ function sendMessage() {
 
   function showTypingIndicator() {
     typingIndicator.style.display = 'block';
-    scrollMessages();
+    scrollcontentSection();
   }
 
   function hideTypingIndicator() {
     typingIndicator.style.display = 'none';
   }
 
-  function scrollMessages() {
-    messagesEl.scrollTop = messagesEl.scrollHeight;
+  function scrollcontentSection() {
+    contentSectionEl.scrollTop = contentSectionEl.scrollHeight;
   }
 
   function normalizeText(text) {
@@ -413,8 +413,8 @@ function sendMessage() {
     const msg = document.createElement('div');
     msg.className = 'message bot-message';
     msg.appendChild(container);
-    messagesEl.appendChild(msg);
-    scrollMessages();
+    contentSectionEl.appendChild(msg);
+    scrollcontentSection();
   }
 
   // Medical analysis functions
@@ -553,7 +553,7 @@ function sendMessage() {
   });
 
   document.getElementById('reset-chat').addEventListener('click', () => {
-    messagesEl.innerHTML = '';
+    contentSectionEl.innerHTML = '';
     chatState.conversationHistory = [];
     addMessage("Hello! I'm MedicoPlus Pro, your advanced medical assistant. How can I help you today?");
     addQuickReplies([
